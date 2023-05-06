@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Holy Moly!</title>
+  <link rel="stylesheet" href="./styles/styles.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+  <div class="overhead">
+    <i class='bx bx-menu-alt-left menu-button'></i>
+    <button data-open-modal class="log-in-button">Log In</button>
+    <!-- <i class='bx bx-user'></i> -->
+  </div>
+
+  <dialog data-modal class="log-in-window">
+    <form>
+      <h1>Log In</h1>
+      <input type="text" placeholder="username" required>
+      <div class="pass">
+        <input type="password" placeholder="password" required>
+        <i class='bx bx-hide'></i>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+    <div class="links">
+      <div class="sign-up">New Here?<a>Sign Up!</a></div>
+      <div class="forgot-password">Forgot Password?<a href="">Click Me!</a></div>
+    </div>
+  </dialog>
+
+  <dialog data-modal class="sign-up-window">
+    <form>
+      <h1>Sign Up</h1>
+      <input type="email" placeholder="email" id="sign-up-email" required>
+      <input type="text" placeholder="username" id="sign-up-username" required>
+      <div class="pass">
+        <input type="password" placeholder="password" id="sign-up-password" required>
+        <i class='bx bx-hide'></i>
+      </div>
+      <input type="password" placeholder="confirm password" id="sign-up-confirm" required>
+      <button type="submit" onclick="register()">Submit</button>
+    </form>
+    <div class="links">
+      <div>Already have an Account?</div>
+      <a class="back-to-log-in">- Log In! -</a>
+    </div>
+  </dialog>
+
+  <div class="menu">
+    <div class="interact">
+      <i class='bx bx-x menu-button'></i>
+      <ul class="menu-items">
+        <li><i class='bx bx-search-alt' ></i> Search</li>
+        <li class="genre-button"><i class='bx bx-expand-vertical'></i> Genres</li>
+        <ul class="genre-list">
+          <li>Edits</li>
+          <li>Movies</li>
+          <li>One Hit</li>
+          <li>Shitposts</li>
+          <li>Templates</li>
+        </ul>
+        <li onclick="window.location.href='https://youtu.be/dmxTqfphL6E'"><i class='bx bx-meteor'></i> Popular</li>
+        <li onclick="window.location.href='https://youtu.be/ZqqVzQgjO48'"><i class='bx bx-crown'></i> Hall of Fame</li>
+        <li onclick="window.location.href='https://youtu.be/NzKU6W1ntv0'"><i class='bx bx-trash'></i> Hall of Disgrace</li>
+        <li onclick="window.location.href='https://youtu.be/mAJ-TJjJPOs'"><i class='bx bx-badge-check' ></i> Hood Classics</li>
+      </ul>
+    </div>
+    <div class="space menu-button"></div>
+  </div>
+
+  <div class="container"></div>
+
+</body>
+<script src="./scripts/main.js"></script>
+</html>
