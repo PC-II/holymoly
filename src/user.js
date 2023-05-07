@@ -15,3 +15,15 @@ window.expand = () => {
     infoButton.textContent = '> More Info';
   }
 }
+
+const viewButtons = document.querySelectorAll('.action-bar div');
+const selector = document.querySelector('.selector');
+viewButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    if(button.className == 'up-votes'){
+      selector.style.left = '72.8%';
+    } else {
+      selector.style.left = '23%';
+    }
+  })
+})

@@ -21,7 +21,6 @@
   color: var(--secondary-color);
   font-size: 34px;
   padding: 7px;
-  z-index: 1;
 }
 
 html,
@@ -41,7 +40,6 @@ body{
 }
 
 .container{
-  background: yellow;
   position: fixed;
   height: 100%;
   width: 100%;
@@ -74,7 +72,6 @@ h1{
   overflow-x: scroll;
 }
 .header .rating{
-  /* border: 1px solid red; */
   position: absolute;
   top: 50px;
   left: 100px;
@@ -99,6 +96,9 @@ h1{
 }
 .bar.fame{
   background: linear-gradient(90deg, gold, green)
+}
+.header .bx-menu-alt-right{
+  right: 5px;
 }
 .header .buttons{
   /* border: 1px solid white; */
@@ -127,14 +127,44 @@ h1{
 
 .action-bar{
   position: sticky;
-  background: blue;
+  background: var(--primary-accent);
   width: 100%;
   height: 50px;
   top: -1px;
+  display: flex;
+  justify-content: space-evenly;
+  overflow: hidden;
+  border-bottom: 6px solid black;
+}
+.action-bar div{
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+.action-bar .my-posts{
+  border-right: 1px solid black;
+}
+.action-bar .up-votes{
+  border-left: 1px solid black;
+}
+.action-bar div i{
+  color: black;
+}
+.action-bar .selector{
+  position: absolute;
+  background: black;
+  border: 1px solid var(--secondary-color);
+  left: 23%;
+  height: 20px;
+  width: 20px;
+  bottom: -16px;
+  rotate: 45deg;
+  transition: left 50ms ease;
 }
 
 .posts{
-  background: linear-gradient(12deg, gray, black);
+  background: linear-gradient(12deg, var(--primary-accent), black);
   width: 100%;
   height: 2000px;
 }
