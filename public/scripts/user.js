@@ -15,7 +15,7 @@
   \*********************/
 /***/ (() => {
 
-eval("\n\n//# sourceURL=webpack://holymolyv2/./src/user.js?");
+eval("/* Setting Height */\r\nwindow.addEventListener('load', () => {\r\n  document.firstElementChild.style.height = (window.innerHeight - 2) + 'px';\r\n  document.firstElementChild.lastElementChild.style.height = (window.innerHeight - 2) + 'px';\r\n})\r\n\r\nconst header = document.querySelector('.header');\r\nconst infoButton = document.querySelector('.info-button');\r\nwindow.expand = () => {\r\n  if(infoButton.textContent == '> More Info'){\r\n    header.style.height = '250px';\r\n    infoButton.textContent = '^ Less Info';\r\n  } else {\r\n    header.style.height = '160px';\r\n    infoButton.textContent = '> More Info';\r\n  }\r\n}\n\n//# sourceURL=webpack://holymolyv2/./src/user.js?");
 
 /***/ })
 
