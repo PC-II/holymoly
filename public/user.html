@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./styles/user.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <title>Profile</title>
+</head>
+<body>
+  <div class="container">
+    <section class="header">
+      <img src="../test-content/alexander.jpeg" alt="" class="profile-pic">
+      <h1>Niteside</h1>
+      <div class="rating">
+        <i class='bx bx-trash' ></i>
+        <div class="bar disgrace"></div>
+        <div class="bar fame"></div>
+        <i class='bx bx-crown' ></i>
+      </div>
+      <i class='bx bx-menu-alt-right'></i>
+      <div class="buttons">
+        <button>Edit Profile</button>
+        <button>Add Friends</button>
+      </div>
+      <div class="info-button" onclick="expand()">> More Info</div>
+    </section>
+    <section class="action-bar">
+      <span class="selector"></span>
+      <div class="my-posts">
+        <i class='bx bxs-user-detail'></i>
+      </div>
+      <div class="up-votes">
+        <i class='bx bx-chevron-up-circle' ></i>
+      </div>
+    </section>
+    <div class="posts">
+      <section class="preview">
+      </section>
+    </div>
+  </div>
+</body>
+<script src="./scripts/user.js"></script>
+</html>
