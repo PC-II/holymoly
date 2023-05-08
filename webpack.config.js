@@ -5,7 +5,10 @@ module.exports = {
   mode: 'development',
   entry: {
     main: path.resolve(__dirname, 'src/index.js'),
-    user: path.resolve(__dirname, 'src/user.js')
+    user: path.resolve(__dirname, 'src/user.js'),
+    config: path.resolve(__dirname, 'src/config.js'),
+    auth: path.resolve(__dirname, 'src/auth.js'),
+
   },
   output: {
     path: path.resolve(__dirname, 'public/scripts'),

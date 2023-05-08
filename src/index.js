@@ -1,19 +1,3 @@
-/* Firebase */
-import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, connectAuthEmulator } from "firebase/auth";
-import { getDatabase, ref } from "firebase/database";
-const firebaseConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  databaseURL: process.env.DATABASE_URL,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.MESSSAGING_SENDER_ID,
-  appId: process.env.APP_ID
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase();
-
 /* Setting Height */
 window.addEventListener('load', () => {
   document.firstElementChild.style.height = (window.innerHeight - 2) + 'px';
@@ -45,19 +29,11 @@ const signUpButton = document.querySelector('.sign-up a'),
 signUpButton.addEventListener('click', () => {
   signUpWindow.showModal();
   logInWindow.firstElementChild.reset();
-  if(showHidePW[0].classList.contains('bx-show')){
-    showHidePW[0].classList.replace('bx-show', 'bx-hide');
-    showHidePW[0].previousElementSibling.setAttribute('type', 'password');
-  }
 })
 const backToLogIn = document.querySelector('.back-to-log-in');
 backToLogIn.addEventListener('click', () => {
   signUpWindow.close();
   signUpWindow.firstElementChild.reset();
-  if(showHidePW[1].classList.contains('bx-show')){
-    showHidePW[1].classList.replace('bx-show', 'bx-hide');
-    showHidePW[1].previousElementSibling.setAttribute('type', 'password');
-  }
 })
 logInWindow.addEventListener("click", e => {
   const dialogDimensions = logInWindow.getBoundingClientRect()
@@ -71,104 +47,15 @@ logInWindow.addEventListener("click", e => {
     signUpWindow.close();
     logInWindow.firstElementChild.reset();
     signUpWindow.firstElementChild.reset();
-    showHidePW.forEach(button => {
-      if(button.classList.contains('bx-show')){
-      button.classList.replace('bx-show', 'bx-hide');
-      button.previousElementSibling.setAttribute('type', 'password');
-      }
-    })
   }
 })
-const showHidePW = document.querySelectorAll('.pass i');
-showHidePW.forEach(button => {
-  button.addEventListener('click', () => {
-    const input = button.previousElementSibling;
-    if(input.getAttribute('type') == 'password'){
-      button.classList.replace('bx-hide', 'bx-show');
-      input.setAttribute('type', 'text');
-    } else {
-      button.classList.replace('bx-show', 'bx-hide');
-      input.setAttribute('type', 'password');
-    }
-  });
-});
 
 
 
 
 /* Register Users */
-document.cookie="SameSite=None; Secure;";
-const auth = getAuth();
-// connectAuthEmulator(auth, 'http://127.0.1.3000');
-const signUpSubmit = document.getElementById('sign-up-submit');
-signUpSubmit.addEventListener('click', (e) => {
 
-  const email = document.getElementById('sign-up-email').value;
-  const username = document.getElementById('sign-up-username').value;
-  const password = document.getElementById('sign-up-password').value;
-  const passConfirm = document.getElementById('sign-up-confirm').value;
 
-  if(validateEmail(email) == false) {
-    e.preventDefault();
-    alert('email is invalid!');
-    return;
-  }
-  if(validateUsername(username) == false) {
-    e.preventDefault();
-    alert('username is invalid!');
-    return;
-  }
-  if(validatePassword(password) == false){
-    e.preventDefault();
-    alert('password is invalid!');
-    return;
-  }
-  if(password != passConfirm){
-    e.preventDefault();
-    alert("passwords don't match!");
-    return;
-  }
-
-  createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    
-    // database
-    const userRef = ref(db, `users/${user.uid}`);
-    set(userRef, {
-      email: email,
-      username: username,
-      rating: 0,
-      last_login: Date.now(),
-    })
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    
-    alert(errorMessage);
-  });
-});
-function validateEmail(email) {
-  const expression = "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/";
-  if(expression.test(email) == true){
-    return true;
-  }
-  return false;
-}
-function validatePassword(password) {
-  if(password.length < 6) {
-    return false;
-  }
-  return true;
-}
-function validateUsername(username) {
-  if(username == null || username.length <= 2) {
-    return false;
-  }
-  return true;
-}
 
 /* Generating Posts */
 // const storage = getStorage();
