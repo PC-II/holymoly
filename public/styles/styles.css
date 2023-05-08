@@ -55,7 +55,18 @@ body{
   pointer-events: all;
 }
 .overhead img{
-  
+  position: fixed;
+  border: 1px solid white;
+  height: 30px;
+  width: 30px;
+  padding: 7px;
+  border-radius: 50px;
+  margin: 7px;
+  right: 0;
+  pointer-events: all;
+}
+.hidden{
+  transform: translateY(-100px);
 }
 
 .log-in-button{

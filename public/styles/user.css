@@ -155,11 +155,12 @@ h1{
   position: absolute;
   background: black;
   border: 1px solid var(--secondary-color);
-  left: 23%;
   height: 20px;
   width: 20px;
-  bottom: -16px;
   rotate: 45deg;
+  bottom: -18px;
+  left: 22%;
+
   transition: left 50ms ease;
 }
 

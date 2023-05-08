@@ -1,11 +1,10 @@
 import { app } from "./config";
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator, signOut } from "firebase/auth";
 import { ref, getDatabase, set } from "firebase/database";
+const db = getDatabase(app);
 
 const auth = getAuth(app);
 connectAuthEmulator(auth, "http://localhost:9099", {disableWarnings: true});
-
-const db = getDatabase(app);
 
 const signUpSubmit = document.getElementById('sign-up-submit');
 const email = document.getElementById('sign-up-email');
@@ -15,6 +14,7 @@ const confirm = document.getElementById('sign-up-confirm');
 const logInWindow = document.querySelector('.log-in-window');
 const signUpWindow = document.querySelector('.sign-up-window');
 
+/* Register New User */
 signUpSubmit.addEventListener('click', async (e) => {
   try{
     if(!email.checkValidity() || !username.checkValidity() || !password.checkValidity() || !confirm.checkValidity()){
@@ -31,33 +31,36 @@ signUpSubmit.addEventListener('click', async (e) => {
       return;
     }
     e.preventDefault();
-    const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
-    
+    const userCredentials = await createUserWithEmailAndPassword(auth, email.value, password.value);
+    var user = userCredentials.user
     user.displayName = username.value;
+
     const userRef = ref(db, `users/${user.uid}`);
     set(userRef, {
       username: user.displayName,
       email: user.email,
       posts: 0,
       rating: 0,
+      last_login: Date.now(),
     })
-
+    logInWindow.close();
+    signUpWindow.close();
   }catch(err){
     console.log(err);
   }
 })
 
-
+const userProfilePic = document.querySelector('.user-profile-pic');
+const logInButton = document.querySelector('.log-in-button');
 
 
 onAuthStateChanged(auth, user => {
   if(user){
-    console.log(user);
-    alert(`you're logged in as ${user.displayName} (uid: ${user.uid}, email: ${user.email})`);
-    logInWindow.close();
-    signUpWindow.close();
+    userProfilePic.classList.remove('hidden');
+    logInButton.classList.add('hidden');
   }else{
-    alert(`you're not logged in`);
+    userProfilePic.classList.add('hidden');
+    logInButton.classList.remove('hidden');
   }
 })
 
