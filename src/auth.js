@@ -4,7 +4,7 @@ import { ref, getDatabase, set } from "firebase/database";
 const db = getDatabase(app);
 
 const auth = getAuth(app);
-connectAuthEmulator(auth, "http://localhost:9099", {disableWarnings: true});
+// connectAuthEmulator(auth, "http://localhost:9099", {disableWarnings: true});
 
 const signUpSubmit = document.getElementById('sign-up-submit');
 const email = document.getElementById('sign-up-email');
