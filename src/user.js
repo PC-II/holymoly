@@ -27,3 +27,11 @@ viewButtons.forEach(button => {
     }
   })
 })
+
+
+
+
+const pullUpMenu = document.querySelector('.pull-up-menu');
+pullUpMenu.addEventListener('click', () => {
+ console.log("hello") 
+})
