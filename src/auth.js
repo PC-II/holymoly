@@ -1,8 +1,15 @@
 import { app } from "./config";
-import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator, signOut } from "firebase/auth";
+import { 
+  getAuth,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  connectAuthEmulator,
+  signOut } from "firebase/auth";
+
 import { ref, getDatabase, set, onValue } from "firebase/database";
 const db = getDatabase(app);
-const usernameRef = ref(db, `usernames`);
+
+console.log('`hello`');
 
 const auth = getAuth(app);
 connectAuthEmulator(auth, "http://localhost:9099", {disableWarnings: true});
@@ -39,23 +46,45 @@ signUpSubmit.addEventListener('click', async (e) => {
     }
     e.preventDefault();
     const userCredentials = await createUserWithEmailAndPassword(auth, email.value, password.value);
-    var user = userCredentials.user;
+    const user = userCredentials.user;
 
-    const userRef = ref(db, `users/${user.uid}`);
-
-    await set(userRef, {
-      username: username.value,
-      email: email.value,
-      posts: 0,
-      rating: 0,
-      last_login: Date.now(),
-    });
-    logInWindow.close();
-    signUpWindow.close();
+    if(user){
+      try{
+        await set(userRef, {
+          username: username.value,
+          email: email.value,
+          posts: 0,
+          rating: 0,
+          last_login: Date.now(),
+        });
+        logInWindow.close();
+        signUpWindow.close();
+      }catch(e){
+        console.log(e);
+      }
+    } 
   }catch(err){
     console.log(err);
   }
 })
+
+
+// const usernameRef = ref(db, `usernames/${user.uid}`);
+// const userRef = ref(db, `users/${user.uid}`);
+
+// async () => {
+//   try{
+//     await set(usernameRef, {
+//       username: 'PC II',
+//     })
+//   }catch(err){
+//     console.log(err);
+//   }
+// }
+
+
+
+// usernameAvailable('PC II');
 
 function usernameAvailable(username){
   onValue(usernameRef, (snapshot) => {
@@ -67,15 +96,19 @@ function usernameAvailable(username){
 const userProfilePic = document.querySelector('.user-profile-pic');
 const logInButton = document.querySelector('.log-in-button');
 const userTitle = document.querySelector('.user-title');
-
 onAuthStateChanged(auth, user => {
   if(user){
-    userProfilePic.classList.remove('hidden');
-    logInButton.classList.add('hidden');
-    userTitle.insertAdjacentText('afterbegin',`${auth.currentUser.displayName}`);
-    console.log(user);
+    showHeader();
   }else{
-    userProfilePic.classList.add('hidden');
-    logInButton.classList.remove('hidden');
+    hideHeader();
   }
 })
+function showHeader() {
+  userProfilePic.classList.remove('hidden');
+  logInButton.classList.add('hidden');
+  userTitle.insertAdjacentText('afterbegin',`${auth.currentUser.displayName}`);
+}
+function hideHeader(){
+  userProfilePic.classList.add('hidden');
+  logInButton.classList.remove('hidden');
+}

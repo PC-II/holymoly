@@ -1,3 +1,10 @@
+/* Loading */
+document.onreadystatechange = () => {
+  if(document.readyState !== 'complete'){
+    
+  }
+}
+
 /* Setting Height */
 window.addEventListener('load', () => {
   document.firstElementChild.style.height = (window.innerHeight - 2) + 'px';
@@ -50,17 +57,9 @@ logInWindow.addEventListener("click", e => {
   }
 })
 
-
-
-
-/* Register Users */
-
-
-
 /* Generating Posts */
 // const storage = getStorage();
 // const storageRef = ref(storage, 'images');
-
 
 
 // document.getElementById('upload').addEventListener('change', () => {
@@ -166,3 +165,4 @@ voteBars.forEach(voteBar => {
     })
   })
 })
+
