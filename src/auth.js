@@ -4,9 +4,10 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   connectAuthEmulator,
-  signOut } from "firebase/auth";
+  signOut,
+  updateProfile } from "firebase/auth";
 
-import { ref, getDatabase, set, onValue } from "firebase/database";
+import { ref, getDatabase, set } from "firebase/database";
 import { getDefaultProfilePic } from "./storage"
 
 const db = getDatabase(app);
@@ -40,22 +41,31 @@ signUpSubmit.addEventListener('click', async (e) => {
     e.preventDefault();
     const userCredentials = await createUserWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredentials.user;
-
     const userRef = ref(db, `users/${user.uid}`);
     const usernameRef = ref(db, `usernames/${user.uid}`);
-
 
     if(user){
       logInWindow.close();
       signUpWindow.close();
-      await set(userRef, {
+      
+      // try{
+      //   await updateProfile(user, {
+      //     displayName: username.value,
+      //     photoURL: await getDefaultProfilePic(),
+      //   })
+      // }catch(err){
+      //   console.error(err);
+      // }
+
+      set(userRef, {
+        username: username.value,
         email: email.value,
         posts: 0,
         rating: 0,
         last_login: Date.now(),
         profile_pic: await getDefaultProfilePic(),
       });
-      await set(usernameRef, {
+      set(usernameRef, {
         username: username.value,
       });
     } 
@@ -64,34 +74,15 @@ signUpSubmit.addEventListener('click', async (e) => {
   }
 })
 
-
-
-
-
-// async () => {
-//   try{
-//     await set(usernameRef, {
-//       username: 'PC II',
-//     })
-//   }catch(err){
-//     console.log(err);
-//   }
-// }
-
-// function usernameAvailable(username){
-//   onValue(usernameRef, (snapshot) => {
-//     console.log(`snapshot: ${snapshot.val()}\nentered username: ${username}`);
-//   })
-//   return true;
-// }
-// usernameAvailable('PC II');
-
 /* UI Selection */
 const userProfilePic = document.querySelector('.user-profile-pic');
 const logInButton = document.querySelector('.log-in-button');
 const userTitle = document.querySelector('.user-title');
 onAuthStateChanged(auth, user => {
   if(user){
+    userTitle.insertAdjacentText('afterbegin', `${user.displayName}`);
+    userProfilePic.setAttribute('src', `${user.photoURL}`);
+    console.log(user);
     showHeader();
   }else{
     hideHeader();
@@ -100,7 +91,6 @@ onAuthStateChanged(auth, user => {
 function showHeader() {
   userProfilePic.classList.remove('hidden');
   logInButton.classList.add('hidden');
-  userTitle.insertAdjacentText('afterbegin',`${auth.currentUser.displayName}`);
 }
 function hideHeader(){
   userProfilePic.classList.add('hidden');

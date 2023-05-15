@@ -1,7 +1,9 @@
 /* Loading */
 document.onreadystatechange = () => {
   if(document.readyState === 'complete'){
-    document.body.removeChild(document.querySelector('.load-screen'));
+    setTimeout(() => {
+      document.body.removeChild(document.querySelector('.load-screen'));
+    }, 750);
   }
 }
 
