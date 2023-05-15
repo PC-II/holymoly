@@ -1,7 +1,7 @@
 /* Loading */
 document.onreadystatechange = () => {
-  if(document.readyState !== 'complete'){
-    
+  if(document.readyState === 'complete'){
+    document.body.removeChild(document.querySelector('.load-screen'));
   }
 }
 
