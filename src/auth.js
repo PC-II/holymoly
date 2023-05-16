@@ -5,14 +5,16 @@ import {
   onAuthStateChanged,
   connectAuthEmulator,
   signOut,
-  updateProfile } from "firebase/auth";
+  updateProfile, 
+  signInWithEmailAndPassword } from "firebase/auth";
 
-import { ref, getDatabase, set } from "firebase/database";
+import { ref, getDatabase, set, get, query, equalTo, limitToFirst, child, onValue } from "firebase/database";
 import { getDefaultProfilePic } from "./storage"
 
-const db = getDatabase(app);
 const auth = getAuth(app);
 connectAuthEmulator(auth, "http://localhost:9099", {disableWarnings: true});
+
+const db = getDatabase();
 
 const signUpSubmit = document.getElementById('sign-up-submit');
 const email = document.getElementById('sign-up-email');
@@ -21,6 +23,7 @@ const password = document.getElementById('sign-up-password');
 const confirm = document.getElementById('sign-up-confirm');
 const logInWindow = document.querySelector('.log-in-window');
 const signUpWindow = document.querySelector('.sign-up-window');
+
 
 /* Register New User */
 signUpSubmit.addEventListener('click', async (e) => {
@@ -39,53 +42,48 @@ signUpSubmit.addEventListener('click', async (e) => {
       return;
     }
     e.preventDefault();
-    const userCredentials = await createUserWithEmailAndPassword(auth, email.value, password.value);
+    const userCredentials = await createUserWithEmailAndPassword(auth, email.value.toUpperCase(), password.value);
     const user = userCredentials.user;
     const userRef = ref(db, `users/${user.uid}`);
-    const usernameRef = ref(db, `usernames/${user.uid}`);
+    const usernamesRef = ref(db, `usernames/${username.value.toUpperCase()}`);
 
     if(user){
       logInWindow.close();
       signUpWindow.close();
-      
-      // try{
-      //   await updateProfile(user, {
-      //     displayName: username.value,
-      //     photoURL: await getDefaultProfilePic(),
-      //   })
-      // }catch(err){
-      //   console.error(err);
-      // }
 
       set(userRef, {
-        username: username.value,
-        email: email.value,
+        username: username.value.toUpperCase(),
+        email: email.value.toUpperCase(),
         posts: 0,
         rating: 0,
         last_login: Date.now(),
         profile_pic: await getDefaultProfilePic(),
       });
-      set(usernameRef, {
-        username: username.value,
-      });
+      set(usernamesRef, {email: email.value.toUpperCase()});
+
     } 
+
   }catch(err){
     console.log(err);
   }
-})
+});
 
 /* UI Selection */
 const userProfilePic = document.querySelector('.user-profile-pic');
 const logInButton = document.querySelector('.log-in-button');
 const userTitle = document.querySelector('.user-title');
-onAuthStateChanged(auth, user => {
-  if(user){
-    userTitle.insertAdjacentText('afterbegin', `${user.displayName}`);
-    userProfilePic.setAttribute('src', `${user.photoURL}`);
+onAuthStateChanged(auth, async user => {
+  try{
     console.log(user);
-    showHeader();
-  }else{
-    hideHeader();
+    if(user){
+      // userTitle.insertAdjacentText('afterbegin', `${user.displayName}`);
+      // userProfilePic.setAttribute('src', `${user.photoURL}`);
+      showHeader();
+    }else{
+      hideHeader();
+    }
+  }catch(err){
+    console.error(err);
   }
 })
 function showHeader() {
@@ -95,4 +93,46 @@ function showHeader() {
 function hideHeader(){
   userProfilePic.classList.add('hidden');
   logInButton.classList.remove('hidden');
+}
+
+/* Log In */
+const logInSubmit = document.getElementById('log-in-submit');
+const logInUsername = document.getElementById('log-in-username');
+const logInPass = document.getElementById('log-in-pass');
+logInSubmit.addEventListener('click', async (e) => {
+  try{
+    if(!logInPass.checkValidity() || !logInUsername.checkValidity()) {
+      return;
+    }
+    if(logInPass.value == '' || logInUsername.value == ''){
+      return;
+    }
+
+
+    e.preventDefault();
+    const email = await getEmail(logInUsername.value);
+    if(email != null) {
+      const userCredentials = await signInWithEmailAndPassword(auth, email, logInPass.value);
+    } else {
+      alert(`Error: ${logInUsername.value} does not exist!`);
+    }
+
+
+
+
+
+
+  }catch(err){
+    console.error(err);
+    alert(err);
+  }
+})
+const getEmail = async (username) => {
+  const usernamesRef = ref(db, `usernames/${username}`);
+  const snapshot = await get(query(usernamesRef), limitToFirst(1));
+  if(snapshot.exists()){
+    return snapshot.val().email;
+  } else {
+    return null;
+  }
 }

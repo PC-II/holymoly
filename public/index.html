@@ -16,7 +16,7 @@
 
   <div class="overhead">
     <i class='bx bx-menu-alt-left menu-button'></i>
-    <button data-open-modal class="log-in-button hidden">Log In</button>
+    <button data-open-modal class="log-in-button hidden" type="button">Log In</button>
     <h1 class="user-title"></h1>
     <img class="user-profile-pic hidden" src="" alt="" onclick="document.location='user.html'">
   </div>
@@ -24,9 +24,9 @@
   <dialog data-modal class="log-in-window">
     <form>
       <h1>Log In</h1>
-      <input type="text" placeholder="username" required>
-      <input type="password" placeholder="password" required>
-      <button type="submit">Submit</button>
+      <input type="text" placeholder="username" id="log-in-username" required>
+      <input type="password" placeholder="password" id="log-in-pass" required>
+      <button id="log-in-submit" type="submit">Submit</button>
     </form>
     <div class="links">
       <div class="sign-up">New Here?<a>Sign Up!</a></div>
@@ -35,7 +35,7 @@
   </dialog>
 
   <dialog data-modal class="sign-up-window">
-    <form action="">
+    <form>
       <h1>Sign Up</h1>
       <input type="email" placeholder="email" id="sign-up-email" required>
       <input type="text" placeholder="username" id="sign-up-username" required>

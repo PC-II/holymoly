@@ -1,9 +1,7 @@
 /* Loading */
 document.onreadystatechange = () => {
   if(document.readyState === 'complete'){
-    setTimeout(() => {
-      document.body.removeChild(document.querySelector('.load-screen'));
-    }, 750);
+    document.body.removeChild(document.querySelector('.load-screen'));
   }
 }
 
@@ -167,4 +165,3 @@ voteBars.forEach(voteBar => {
     })
   })
 })
-

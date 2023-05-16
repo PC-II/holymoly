@@ -6,7 +6,7 @@ const defaultProfilePicRef = ref(storage, 'default.png');
 
 export const getDefaultProfilePic = async() => {
   try {
-    return await getDownloadURL(defaultProfilePicRef);
+    return getDownloadURL(defaultProfilePicRef);
   } catch(err){
     console.log(err);
   }
