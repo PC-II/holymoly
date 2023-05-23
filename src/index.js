@@ -11,7 +11,7 @@ window.addEventListener('load', () => {
   document.firstElementChild.lastElementChild.style.height = (window.innerHeight - 2) + 'px';
 })
 
-/* Menu Toggles */
+/* Main Menu */
 const menuButton = document.querySelectorAll('.menu-button'),
   menu = document.querySelector('.menu');
 menuButton.forEach(button => {
@@ -25,7 +25,7 @@ genreButton.addEventListener('click', () => {
   genreList.classList.toggle('genre-list-toggle');
 });
 
-/* Log In | Sign Up */
+/* Log In Menu | Sign Up Menu */
 const logInButton = document.querySelector('.log-in-button'),
   logInWindow = document.querySelector('.log-in-window');
 logInButton.addEventListener('click', () => {
@@ -55,6 +55,15 @@ logInWindow.addEventListener("click", e => {
     logInWindow.firstElementChild.reset();
     signUpWindow.firstElementChild.reset();
   }
+})
+
+/* Log Out Menu */
+const logOutButtons = document.querySelectorAll('#log-out-toggle');
+const logOutContainer = document.querySelector('.log-out-container');
+logOutButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    logOutContainer.classList.toggle('show-log-out-menu');
+  })
 })
 
 /* Generating Posts */
