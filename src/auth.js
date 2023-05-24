@@ -7,16 +7,20 @@ import {
   signOut,
   updateProfile, 
   signInWithEmailAndPassword } from "firebase/auth";
-
-import { ref, getDatabase, set, get, connectDatabaseEmulator, child, onValue } from "firebase/database";
-import { getDefaultProfilePic } from "./storage"
+import { 
+  ref,
+  getDatabase,
+  set,
+  get,
+  connectDatabaseEmulator } from "firebase/database";
+import { getDefaultProfilePic } from "./storage";
+import { validEmail, validUsername, validPassword, validConfirmPass, validentry, validEntry } from "./validators";
 
 const auth = getAuth();
 connectAuthEmulator(auth, "http://localhost:9099", {disableWarnings: true});
 
 const db = getDatabase();
 connectDatabaseEmulator(db, "localhost", 9000);
-const dbRef = ref(db);
 
 const signUpSubmit = document.getElementById('sign-up-submit');
 const signUpEmail = document.getElementById('sign-up-email');
@@ -26,59 +30,138 @@ const signUpConfirmPass = document.getElementById('sign-up-confirm');
 const logInWindow = document.querySelector('.log-in-window');
 const signUpWindow = document.querySelector('.sign-up-window');
 
+/* Dynamic Validity Check for Sign Up */
+var errMessages = [];
+const signUpInputs = signUpWindow.querySelectorAll('input');
+signUpInputs.forEach(input => {
+  input.addEventListener('focusout', () => {
+    var inputErrs = validEntry(input.value, input.id, signUpPassword.value);
+    if(inputErrs.length > 0){
+      if(input.id === 'sign-up-email'){
+        errMessages[0] = inputErrs;
+      } else if (input.id === 'sign-up-username'){
+        errMessages[1] = inputErrs;
+      } else if (input.id === 'sign-up-password'){
+        errMessages[2] = inputErrs;
+      } else {  // validate matching password
+        errMessages[3] = inputErrs;
+      }
+      input.style.border = `2px solid var(--warning)`;
+    } else {
+      input.style.border = `2px solid green`;
+    }
+
+    if(errMessages.length > 0){
+      showErrorBox();
+      showErrors(errMessages.flat());
+    } else {
+      hideErrorBox();
+      console.log(`${input.id} valid`);
+    }
+  });
+});
+const showErrorBox = () => {
+  signUpWindow.lastElementChild.style.display = `block`;
+  signUpWindow.style.height = `500px`;
+  signUpWindow.firstElementChild.style.height = `50%`;
+  signUpWindow.firstElementChild.style.top = `10px`;
+}
+const hideErrorBox = () => {
+  signUpWindow.lastElementChild.style.display = `none`;
+  signUpWindow.style.height = `400px`;
+  signUpWindow.firstElementChild.style.height = `70%`;
+  signUpWindow.firstElementChild.style.top = `40px`;
+}
+const showErrors = (errors) => {  // work on this !!!!!
+  errors.forEach(error => {
+    console.log(error);
+  })
+}
 
 /* Register New User */
 signUpSubmit.addEventListener('click', async (e) => {
   e.preventDefault();
 
-  // // Validate Entry Fields
-  // if(password.value != confirm.value){
-  //   e.preventDefault();
-  //   alert('Passwords do not match');
-  //   return;
+  // Validate Entries
+  // var errMessages = [];
+  // var emailErrs = validEmail(signUpEmail.value);
+  // if(emailErrs.length > 0){
+  //   emailErrs.forEach(message => {
+  //     errMessages.push(message);
+  //   });
   // }
-  // if(password.value.length < 6){
-  //   e.preventDefault();
-  //   alert('Password must be at least 6 characters');
-  //   return;
+  // var usernameErrs = validUsername(signUpUsername.value);
+  // if(usernameErrs.length > 0){
+  //   usernameErrs.forEach(message => {
+  //     errMessages.push(message);
+  //   });
+  // }
+  // var passwordErrs = validPassword(signUpPassword.value);
+  // if(passwordErrs.length > 0){
+  //   passwordErrs.forEach(message => {
+  //     errMessages.push(message);
+  //   });
+  // }
+  // var confirmPassErrs = validConfirmPass(signUpConfirmPass.value, signUpPassword.value);
+  // if(confirmPassErrs.length > 0){
+  //   confirmPassErrs.forEach(message => {
+  //     errMessages.push(message);
+  //   });
   // }
 
-  try{
-    const userCredentials = await createUserWithEmailAndPassword(auth, signUpEmail.value.toUpperCase(), signUpPassword.value);
-    const user = userCredentials.user;
-    const userRef = ref(db, `users/${user.uid}`);
-    const usernameRef = ref(db, `usernames/${signUpUsername.value.toUpperCase()}`);
-    const defaultProfilePic = await getDefaultProfilePic();
-    
-    if(user){
-      const set1 = set(userRef, {
-        username: signUpUsername.value.toUpperCase(),
-        email: signUpEmail.value.toUpperCase(),
-        posts: 0,
-        rating: 0,
-        last_login: Date.now(),
-        profile_pic: defaultProfilePic,
-      });
-      const set2 = set(usernameRef, {email: signUpEmail.value.toUpperCase()});
-      const set3 = updateProfile(user, {
-        displayName: signUpUsername.value.toUpperCase(),
-        photoURL: defaultProfilePic,
-      })
-      logInWindow.close();
-      signUpWindow.close();
-      await Promise.allSettled([set1, set2, set3]);
 
-      overhead.insertAdjacentHTML('beforeend', `
-        <h1 class="user-title">${user.displayName}</h1>
-      `)
-      userProfilePic.setAttribute('src', user.photoURL);
+  // // Compress errors into a single error list
+  // if(errMessages.length > 0){
+  //   showErrors(errMessages);
+  // } else {
+  //   console.log('successful submission!');
+  // }
 
-      return;
-    } 
-  }catch(err){
-    console.log(err);
-  }
+  // if(errMessages.length > 0){
+  //   console.log(`not valid`);
+  // } else {
+  //   console.log(`valid`);
+  // }
+
+  
+  // else {
+  //   try{
+  //     const userCredentials = await createUserWithEmailAndPassword(auth, signUpEmail.value.toUpperCase(), signUpPassword.value);
+  //     const user = userCredentials.user;
+  //     const userRef = ref(db, `users/${user.uid}`);
+  //     const usernameRef = ref(db, `usernames/${signUpUsername.value.toUpperCase()}`);
+  //     const defaultProfilePic = await getDefaultProfilePic();
+      
+  //     if(user){
+  //       const set1 = set(userRef, {
+  //         username: signUpUsername.value.toUpperCase(),
+  //         email: signUpEmail.value.toUpperCase(),
+  //         posts: 0,
+  //         rating: 0,
+  //         last_login: Date.now(),
+  //         profile_pic: defaultProfilePic,
+  //       });
+  //       const set2 = set(usernameRef, {email: signUpEmail.value.toUpperCase()});
+  //       const set3 = updateProfile(user, {
+  //         displayName: signUpUsername.value.toUpperCase(),
+  //         photoURL: defaultProfilePic,
+  //       })
+  //       await Promise.allSettled([set1, set2, set3]);
+  //       overhead.insertAdjacentHTML('beforeend', `
+  //         <h1 class="user-title">${user.displayName}</h1>
+  //       `)
+  //       userProfilePic.setAttribute('src', user.photoURL);
+  
+  //       logInWindow.close();
+  //       signUpWindow.close();
+  //       return;
+  //     } 
+  //   }catch(err){
+  //     console.error(err);
+  //   }
+  // }
 });
+
 
 /* Log In */
 const logInSubmit = document.getElementById('log-in-submit');
@@ -87,8 +170,6 @@ const logInPass = document.getElementById('log-in-pass');
 logInSubmit.addEventListener('click', async (e) => {
   e.preventDefault();
 
-  // Check Validity
-  
   try{
     const logInEmail = await getEmail(logInUsername.value.toUpperCase());
     if(logInEmail != null) {
@@ -97,12 +178,13 @@ logInSubmit.addEventListener('click', async (e) => {
       
       logInWindow.close();
     } else {
-      alert(`Error: ${logInUsername.value} does not exist!`);
+
+      // pass this to the error log
+      // alert(`Error: ${logInUsername.value} does not exist!`);
     }
     return null;
   }catch(err){
     console.error(err);
-    alert(err);
   }
 })
 const getEmail = async (username) => {
@@ -163,46 +245,3 @@ function hideHeader(){
   userProfilePic.classList.add('hidden');
   logInButton.classList.remove('hidden');
 }
-// const getUsername = async (uid) => {
-//   const snapshot = await get(child(dbRef, `users/${uid}`));
-//   return snapshot.val().username
-// }
-// const getProfilePic = async (uid) => {
-//   const snapshot = await get(child(dbRef, `users/${uid}`));
-//   return snapshot.val().profile_pic;
-// }
-
-/* Error Message */
-// const inputFields = document.querySelectorAll('form input');
-// inputFields.forEach(inputField => {
-//   inputField.addEventListener('focusout', () => {
-//     if(inputField.value == ''){
-//       inputField.insertAdjacentHTML('afterbegin', `
-//       <p class="error-message"><i class='bx bx-error-circle'></i>This field is still empty!</p>
-//       `);
-//     }
-//   })
-// })
-
-// /* Check Form Validity*/
-// const validLogUsername = (username) => {
-
-// }
-// const validLogPass = (pass) => {
-
-// }
-// const validSignEmail = (email) => {
-
-// }
-// const validSignUsername = (username) => {
-
-// }
-// const validSignPassword = (pass) => {
-
-// }
-// const validSignConfirmPass = (passConfirm) => {
-
-// }
-
-
-/* <p class="error-message"><i class='bx bx-error-circle'></i>this is an error message!</p> */

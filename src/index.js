@@ -30,18 +30,24 @@ const logInButton = document.querySelector('.log-in-button'),
   logInWindow = document.querySelector('.log-in-window');
 logInButton.addEventListener('click', () => {
   logInWindow.showModal();
-})
+});
 const signUpButton = document.querySelector('.sign-up a'),
   signUpWindow = document.querySelector('.sign-up-window');
 signUpButton.addEventListener('click', () => {
+  logInWindow.querySelectorAll('form input').forEach(input => {
+    input.style.border = 'unset';
+  });
   signUpWindow.showModal();
   logInWindow.firstElementChild.reset();
-})
+});
 const backToLogIn = document.querySelector('.back-to-log-in');
 backToLogIn.addEventListener('click', () => {
+  signUpWindow.querySelectorAll('form input').forEach(input => {
+    input.style.border = 'unset';
+  });
   signUpWindow.close();
   signUpWindow.firstElementChild.reset();
-})
+});
 logInWindow.addEventListener("click", e => {
   const dialogDimensions = logInWindow.getBoundingClientRect()
   if (
@@ -54,8 +60,11 @@ logInWindow.addEventListener("click", e => {
     signUpWindow.close();
     logInWindow.firstElementChild.reset();
     signUpWindow.firstElementChild.reset();
+    document.querySelectorAll('form input').forEach(input => {
+      input.style.border = 'unset';
+    });
   }
-})
+});
 
 /* Log Out Menu */
 const logOutButtons = document.querySelectorAll('#log-out-toggle');
