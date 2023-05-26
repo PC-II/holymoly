@@ -28,6 +28,7 @@ export const validUsername = (username) => {
   return errors;
 }
 
+
 export const validPassword = (password) => {
   errors = [];
   if(password === ''){

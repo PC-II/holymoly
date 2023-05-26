@@ -12,9 +12,18 @@ import {
   getDatabase,
   set,
   get,
-  connectDatabaseEmulator } from "firebase/database";
+  connectDatabaseEmulator,
+  query, 
+  orderByChild, 
+  limitToFirst, 
+  equalTo} from "firebase/database";
 import { getDefaultProfilePic } from "./storage";
-import { validEmail, validUsername, validPassword, validConfirmPass, validentry, validEntry } from "./validators";
+import {
+  validEmail,
+  validUsername,
+  validPassword,
+  validConfirmPass,
+  validEntry } from "./validators";
 
 const auth = getAuth();
 connectAuthEmulator(auth, "http://localhost:9099", {disableWarnings: true});
@@ -32,35 +41,49 @@ const signUpWindow = document.querySelector('.sign-up-window');
 
 /* Dynamic Validity Check for Sign Up */
 var errMessages = [];
+var usernameAvail = true;
+var emailAvail = true;
+const errorBox = document.querySelector('.error-box');
 const signUpInputs = signUpWindow.querySelectorAll('input');
 signUpInputs.forEach(input => {
   input.addEventListener('focusout', () => {
+    errorBox.innerHTML = '';
     var inputErrs = validEntry(input.value, input.id, signUpPassword.value);
+    if(input.id === 'sign-up-email'){
+      errMessages[0] = inputErrs;
+    } else if (input.id === 'sign-up-username'){
+      errMessages[1] = inputErrs;
+    } else if (input.id === 'sign-up-password'){
+      errMessages[2] = inputErrs;
+    } else {  // validate matching password
+      errMessages[3] = inputErrs;
+    }
+
     if(inputErrs.length > 0){
-      if(input.id === 'sign-up-email'){
-        errMessages[0] = inputErrs;
-      } else if (input.id === 'sign-up-username'){
-        errMessages[1] = inputErrs;
-      } else if (input.id === 'sign-up-password'){
-        errMessages[2] = inputErrs;
-      } else {  // validate matching password
-        errMessages[3] = inputErrs;
-      }
       input.style.border = `2px solid var(--warning)`;
     } else {
       input.style.border = `2px solid green`;
     }
 
-    if(errMessages.length > 0){
+    if(!emailAvail && input.id === 'sign-up-email'){
+      errMessages[0] = [`📧 Email: Not Available`];
+      input.style.border = `2px solid var(--warning)`;
+    }
+    if(!usernameAvail && input.id === 'sign-up-username'){
+      errMessages[1] = [`👤 Username: Not available`];
+      input.style.border = `2px solid var(--warning)`;
+    }
+
+    if(errMessages.flat().length > 0){
       showErrorBox();
-      showErrors(errMessages.flat());
+      showErrors(errMessages.flat(), errorBox);
     } else {
       hideErrorBox();
-      console.log(`${input.id} valid`);
     }
   });
 });
 const showErrorBox = () => {
+  errorBox.style.border = `2px solid var(--warning)`;
   signUpWindow.lastElementChild.style.display = `block`;
   signUpWindow.style.height = `500px`;
   signUpWindow.firstElementChild.style.height = `50%`;
@@ -72,9 +95,11 @@ const hideErrorBox = () => {
   signUpWindow.firstElementChild.style.height = `70%`;
   signUpWindow.firstElementChild.style.top = `40px`;
 }
-const showErrors = (errors) => {  // work on this !!!!!
+const showErrors = (errors, box) => {
   errors.forEach(error => {
-    console.log(error);
+    var message = document.createElement('p');
+    message.textContent = error;
+    box.appendChild(message);
   })
 }
 
@@ -83,108 +108,159 @@ signUpSubmit.addEventListener('click', async (e) => {
   e.preventDefault();
 
   // Validate Entries
-  // var errMessages = [];
-  // var emailErrs = validEmail(signUpEmail.value);
-  // if(emailErrs.length > 0){
-  //   emailErrs.forEach(message => {
-  //     errMessages.push(message);
-  //   });
-  // }
-  // var usernameErrs = validUsername(signUpUsername.value);
-  // if(usernameErrs.length > 0){
-  //   usernameErrs.forEach(message => {
-  //     errMessages.push(message);
-  //   });
-  // }
-  // var passwordErrs = validPassword(signUpPassword.value);
-  // if(passwordErrs.length > 0){
-  //   passwordErrs.forEach(message => {
-  //     errMessages.push(message);
-  //   });
-  // }
-  // var confirmPassErrs = validConfirmPass(signUpConfirmPass.value, signUpPassword.value);
-  // if(confirmPassErrs.length > 0){
-  //   confirmPassErrs.forEach(message => {
-  //     errMessages.push(message);
-  //   });
-  // }
+  errMessages = [];
+  errorBox.innerHTML = '';
+  errorBox.style.border = `none`;
 
+  var emailErrs = validEmail(signUpEmail.value);
+  if(emailErrs.length > 0){
+    errMessages[0] = emailErrs;
+    signUpEmail.style.border = `2px solid var(--warning)`;
+  } else{
+    if(!(await checkEmailAvail(signUpEmail.value))){
+      errMessages[0] = [`📧 Email: Not Available`];
+      signUpEmail.style.border = `2px solid var(--warning)`;
+      emailAvail = false;
+    } else {
+      emailAvail = true;
+      signUpEmail.style.border = `2px solid green`;
+    }
+  }
+  var usernameErrs = validUsername(signUpUsername.value);
+  if(usernameErrs.length > 0){
+    errMessages[1] = usernameErrs;
+    signUpUsername.style.border = `2px solid var(--warning)`;
+  } else{ 
+    if(!(await checkUsernameAvail(signUpUsername.value))){
+    errMessages[1] = [`👤 Username: Not available`];
+    signUpUsername.style.border = `2px solid var(--warning)`;
+    usernameAvail = false;
+    } else {
+      usernameAvail = true;
+      signUpUsername.style.border = `2px solid green`;
+    }
+  }
+  var passwordErrs = validPassword(signUpPassword.value);
+  if(passwordErrs.length > 0){
+    errMessages[2] = passwordErrs;
+    signUpPassword.style.border = `2px solid var(--warning)`;
+  }
+  var confirmPassErrs = validConfirmPass(signUpConfirmPass.value, signUpPassword.value);
+  if(confirmPassErrs.length > 0){
+    errMessages[3] = confirmPassErrs;
+    signUpConfirmPass.style.border = `2px solid var(--warning)`;
+  }
 
-  // // Compress errors into a single error list
-  // if(errMessages.length > 0){
-  //   showErrors(errMessages);
-  // } else {
-  //   console.log('successful submission!');
-  // }
+  // last check for errors
+  if(errMessages.flat().length > 0){
+    showErrorBox();
+    showErrors(errMessages.flat(), errorBox);
+    shake(errorBox);
+  } else {
+    try{
+      const userCredentials = await createUserWithEmailAndPassword(auth, signUpEmail.value.toUpperCase(), signUpPassword.value);
+      const user = userCredentials.user;
+      const userRef = ref(db, `users/${user.uid}`);
+      const usernameRef = ref(db, `usernames/${signUpUsername.value.toUpperCase()}`);
+      const defaultProfilePic = await getDefaultProfilePic();
 
-  // if(errMessages.length > 0){
-  //   console.log(`not valid`);
-  // } else {
-  //   console.log(`valid`);
-  // }
-
-  
-  // else {
-  //   try{
-  //     const userCredentials = await createUserWithEmailAndPassword(auth, signUpEmail.value.toUpperCase(), signUpPassword.value);
-  //     const user = userCredentials.user;
-  //     const userRef = ref(db, `users/${user.uid}`);
-  //     const usernameRef = ref(db, `usernames/${signUpUsername.value.toUpperCase()}`);
-  //     const defaultProfilePic = await getDefaultProfilePic();
-      
-  //     if(user){
-  //       const set1 = set(userRef, {
-  //         username: signUpUsername.value.toUpperCase(),
-  //         email: signUpEmail.value.toUpperCase(),
-  //         posts: 0,
-  //         rating: 0,
-  //         last_login: Date.now(),
-  //         profile_pic: defaultProfilePic,
-  //       });
-  //       const set2 = set(usernameRef, {email: signUpEmail.value.toUpperCase()});
-  //       const set3 = updateProfile(user, {
-  //         displayName: signUpUsername.value.toUpperCase(),
-  //         photoURL: defaultProfilePic,
-  //       })
-  //       await Promise.allSettled([set1, set2, set3]);
-  //       overhead.insertAdjacentHTML('beforeend', `
-  //         <h1 class="user-title">${user.displayName}</h1>
-  //       `)
-  //       userProfilePic.setAttribute('src', user.photoURL);
-  
-  //       logInWindow.close();
-  //       signUpWindow.close();
-  //       return;
-  //     } 
-  //   }catch(err){
-  //     console.error(err);
-  //   }
-  // }
+      // successfully created an account
+      if(user){
+        const set1 = set(userRef, {
+          username: signUpUsername.value.toUpperCase(),
+          email: signUpEmail.value.toUpperCase(),
+          posts: 0,
+          rating: 0,
+          last_login: Date.now(),
+          profile_pic: defaultProfilePic,
+        });
+        const set2 = set(usernameRef, {email: signUpEmail.value.toUpperCase()});
+        const set3 = updateProfile(user, {
+          displayName: signUpUsername.value.toUpperCase(),
+          photoURL: defaultProfilePic,
+        })
+        await Promise.allSettled([set1, set2, set3]);
+        overhead.insertAdjacentHTML('beforeend', `
+          <h1 class="user-title">${user.displayName}</h1>
+        `)
+        userProfilePic.setAttribute('src', user.photoURL);
+        logInWindow.close();
+        signUpWindow.close();
+        return;
+      } 
+    }catch(err){
+      console.error(err);
+    }
+  }
 });
-
-
+const checkEmailAvail = async (email) => {
+  const usernamesRef = ref(db, `usernames`);
+  const snapshot = await get(query(usernamesRef, orderByChild('email'), equalTo(email.toUpperCase())));
+  if(snapshot.exists()){
+    return false;
+  } else {
+    return true;
+  }
+}
+const checkUsernameAvail = async (username) => {
+  const usernameRef = ref(db, `usernames/${username.toUpperCase()}`);
+  const snapshot = await get(usernameRef);
+  if(snapshot.exists()){
+    return false;
+  } else {
+    return true;
+  }
+}
+const shake = (element) => {
+  setTimeout(() => {
+    element.classList.add('shake');
+  }, 150);
+  element.classList.remove('shake');
+}
+              
 /* Log In */
 const logInSubmit = document.getElementById('log-in-submit');
 const logInUsername = document.getElementById('log-in-username');
 const logInPass = document.getElementById('log-in-pass');
+const logInErrorBox = document.querySelector('.log-in-error-box');
+var logInErrorMessages = [];
 logInSubmit.addEventListener('click', async (e) => {
   e.preventDefault();
+  logInErrorBox.innerHTML = '';
+  logInErrorMessages = [];
+  logInErrorBox.style.border = `none`;
+  
+  // Check for Errors
+  const logInEmail = await getEmail(logInUsername.value.toUpperCase());
+  if(logInUsername.value === ''){
+    logInErrorMessages.push(`👤 Username: Can't be blank`);
+  } else if(logInEmail == null) {
+    logInErrorMessages.push(`👤 ${logInUsername.value} does not exist`);
+  } else {
+    logInUsername.style.border = `none`;
+  }
+  if(logInPass.value === ''){
+    logInErrorMessages.push(`🔑 Password: Can't be blank`);
+  } else {
+    logInPass.style.border = `none`;
+  }
 
-  try{
-    const logInEmail = await getEmail(logInUsername.value.toUpperCase());
-    if(logInEmail != null) {
+  if(logInErrorMessages.length > 0){
+    showLogInErrorBox();
+    showErrors(logInErrorMessages, logInErrorBox);
+    shake(logInErrorBox);
+  } else {
+    hideLogInErrorBox();
+    try{
       const userCredentials = await signInWithEmailAndPassword(auth, logInEmail, logInPass.value);
-      
-      
       logInWindow.close();
-    } else {
-
-      // pass this to the error log
-      // alert(`Error: ${logInUsername.value} does not exist!`);
+      
+    }catch(err){
+      console.error(err);
+      showLogInErrorBox();
+      showErrors([`👤🔑 Username or password is incorrect`], logInErrorBox);
+      shake(logInErrorBox);
     }
-    return null;
-  }catch(err){
-    console.error(err);
   }
 })
 const getEmail = async (username) => {
@@ -195,6 +271,18 @@ const getEmail = async (username) => {
   } else {
     return;
   }
+}
+const showLogInErrorBox = () => {
+  logInErrorBox.style.border = `2px solid var(--warning)`;
+  logInWindow.lastElementChild.style.display = `block`;
+  logInWindow.firstElementChild.style.height = `60%`;
+  logInWindow.firstElementChild.style.top = `10px`;
+}
+const hideLogInErrorBox = () => {
+  logInWindow.lastElementChild.style.display = `none`;
+  logInWindow.style.height = `300px`;
+  logInWindow.firstElementChild.style.height = `70%`;
+  logInWindow.firstElementChild.style.top = `30px`;
 }
 
 /* Log Out */

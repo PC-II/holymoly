@@ -2,8 +2,8 @@
   "rules": {
     ".read": true,   // 2023-04-25 -> 2023-05-25
     ".write": true,   // 2023-04-25 -> 2023-05-25
-    "users": {
-      ".indexOn": "username"
+    "usernames": {
+      ".indexOn": "email"
     }
   }
 }

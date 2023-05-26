@@ -47,6 +47,7 @@ backToLogIn.addEventListener('click', () => {
   });
   signUpWindow.close();
   signUpWindow.firstElementChild.reset();
+  errMessages = [];
 });
 logInWindow.addEventListener("click", e => {
   const dialogDimensions = logInWindow.getBoundingClientRect()
