@@ -326,12 +326,12 @@ onAuthStateChanged(auth, user => {
 });
 function showLoggedIn() {
   overhead.querySelector('.user-title').classList.remove('hidden');
-  userProfilePic.classList.remove('hidden');
+  userProfilePicContainer.classList.remove('hidden');
   logInButton.classList.add('hidden');
   logOutButton.classList.add('show-log-out-button');
 }
 function showLoggedOut(){
-  userProfilePic.classList.add('hidden');
+  userProfilePicContainer.classList.add('hidden');
   logInButton.classList.remove('hidden');
   logOutButton.classList.remove('show-log-out-button');
   if(userTitle != null){
@@ -340,6 +340,7 @@ function showLoggedOut(){
 }
 
 /* Userpage Icon Button */
+const userProfilePicContainer = document.querySelector('.user-profile-pic-container');
 userProfilePic.addEventListener('click', () => {
   const user = auth.currentUser;
   if(user){
