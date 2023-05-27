@@ -290,25 +290,11 @@ const hideLogInErrorBox = () => {
   logInWindow.firstElementChild.style.top = `30px`;
 }
 
-/* Log Out */
-const logOutConfirm = document.getElementById('log-out-confirm');
-logOutConfirm.addEventListener('click', async () => {
-  try{
-    const logoutRef = ref(db, `users/${auth.currentUser.uid}/last_logout`);
-    await set(logoutRef, Date());
-    await signOut(auth);
-    location.reload();
-  }catch(err){
-    console.error(err);
-  }
-});
-
 /* UI Selection */
 const userProfilePic = document.querySelector('.user-profile-pic');
 const logInButton = document.querySelector('.log-in-button');
 const userTitle = document.querySelector('.user-title');
 const overhead = document.querySelector('.overhead');
-const logOutButton = document.querySelector('.log-out-button');
 onAuthStateChanged(auth, user => {
   if(user){
     if(user.displayName != null && userTitle == null){
@@ -328,12 +314,10 @@ function showLoggedIn() {
   overhead.querySelector('.user-title').classList.remove('hidden');
   userProfilePicContainer.classList.remove('hidden');
   logInButton.classList.add('hidden');
-  logOutButton.classList.add('show-log-out-button');
 }
 function showLoggedOut(){
   userProfilePicContainer.classList.add('hidden');
   logInButton.classList.remove('hidden');
-  logOutButton.classList.remove('show-log-out-button');
   if(userTitle != null){
     userTitle.remove();
   }

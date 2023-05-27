@@ -67,14 +67,6 @@ logInWindow.addEventListener("click", e => {
   }
 });
 
-/* Log Out Menu */
-const logOutButtons = document.querySelectorAll('#log-out-toggle');
-const logOutContainer = document.querySelector('.log-out-container');
-logOutButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    logOutContainer.classList.toggle('show-log-out-menu');
-  })
-})
 
 /* Generating Posts */
 // const storage = getStorage();

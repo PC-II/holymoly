@@ -10,13 +10,17 @@
 </head>
 <body>
   <div class="container">
+    <section class="load-screen">
+      <div class="loader"></div>
+      <div class="load-bar"></div>
+    </section>
     <section class="header">
       <figure class="profile-pic">
         <img src="" alt="">
       </figure>
       <div class="top-line">
         <h1></h1>
-        <i class='bx bx-menu-alt-right'></i>
+        <i class='bx bx-menu-alt-right menu-button'></i>
       </div>
       <div class="rating">
         <i class='bx bx-trash' ></i>
@@ -39,10 +43,65 @@
         <i class='bx bx-chevron-up-circle' ></i>
       </div>
     </section>
-    <div class="posts">
-      <section class="preview">
-      </section>
-    </div>
+    <section class="posts">
+      <div class="preview-posts">
+      </div>
+    </section>
+    <section class="menu">
+      <div class="menu-background menu-button"></div>
+      <div class="menu-interact">
+        <div class="back-button">
+          <i class='bx bx-x menu-button'></i>
+        </div>
+        <ul class="menu-items">
+          <li onclick="location.href='index.html'"><i class='bx bx-home-alt-2'></i>Home</li>
+          <li><i class='bx bx-search-alt' ></i> Search</li>
+          <li class="genre-button"><i class='bx bx-expand-vertical'></i> Genres</li>
+          <ul id="genre-list">
+            <li>Edits</li>
+            <li>Movies</li>
+            <li>One Hit</li>
+            <li>Shitposts</li>
+            <li>Templates</li>
+          </ul>
+          <li onclick="window.location.href='https://youtu.be/dmxTqfphL6E'"><i class='bx bx-meteor'></i> Popular</li>
+          <li onclick="window.location.href='https://youtu.be/ZqqVzQgjO48'"><i class='bx bx-crown'></i> Hall of Fame</li>
+          <li onclick="window.location.href='https://youtu.be/NzKU6W1ntv0'"><i class='bx bx-trash'></i> Hall of Disgrace</li>
+          <li onclick="window.location.href='https://youtu.be/mAJ-TJjJPOs'"><i class='bx bx-badge-check' ></i> Hood Classics</li>
+        </ul>
+        <div class="make-a-post-container">
+          <div class="make-a-post">
+            <h1>Make a Post</h1>
+            <i class='bx bx-plus'></i>
+          </div>
+        </div>
+        <div class="log-out-button-container">
+          <button type="button" class="log-out-button" id="log-out-toggle">Log Out</button>
+        </div>
+      </div>
+    </section>
+    <section class="log-out-container">
+      <div class="log-out-box">
+        <p>Are you sure you want to <span>Log Out?</span></p>
+        <div>
+          <button id="log-out-toggle">No, Cancel</button>
+          <button id="log-out-confirm">Yes, <span>Log Out</span></button>
+        </div>
+      </div>
+    </section>
+    <i class='bx bx-up-arrow-circle' id="back-to-top"></i>
+    <!-- <input type="file" id="add-post">
+    <label for="add-post" class="add-post toggle-upload"><i class='bx bx-plus'></i></label>
+    <section class="upload">
+      <div class="upload-background"></div>
+      <div class="upload-box">
+        <div class="img-preview"><img src="" alt=""></div>
+        <div class="options">
+          <button id="cancel" class="toggle-upload">Cancel</button>
+          <button id="submit">Submit</button>
+        </div>
+      </div>
+    </section> -->
   </div>
 </body>
 <script src="./scripts/user.js"></script>
