@@ -90,15 +90,21 @@ body{
 .overhead .menu-button{
   pointer-events: all;
 }
-.overhead img{
+.user-profile-pic-container{
   position: absolute;
-  border: 1px solid white;
-  height: 30px;
-  width: 30px;
-  padding: 7px;
-  border-radius: 50px;
-  margin: 7px;
   right: 0;
+  top: 0;
+  width: 50px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 100px;
+  margin: 10px;
+  border: 1px solid white;
+}
+.overhead .user-profile-pic{
+  position: absolute;
+  left: -23%;
+  height: 100%;
   pointer-events: all;
 }
 .overhead .user-title{
@@ -106,7 +112,7 @@ body{
   left: 50%;
   transform: translateX(-50%);
   margin: 7px;
-  opacity: 0.7;
+  opacity: 0.8;
   text-decoration: underline;
 }
 .log-in-button{
@@ -119,7 +125,7 @@ body{
   pointer-events: all;
 }
 .hidden{
-  transform: translateY(-100px);
+  display: none;
 }
 
 dialog{

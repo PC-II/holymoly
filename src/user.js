@@ -1,3 +1,19 @@
+import { auth, db } from "./config";
+import { connectAuthEmulator, onAuthStateChanged } from "firebase/auth";
+import { connectDatabaseEmulator } from "firebase/database";
+
+connectAuthEmulator(auth, "http://localhost:9099", {disableWarnings: true});
+connectDatabaseEmulator(db, "localhost", 9000);
+
+onAuthStateChanged(auth, user => {
+  if(user){
+    document.querySelector('.header h1').textContent = user.displayName;
+    document.querySelector('.profile-pic img').setAttribute('src', user.photoURL);
+  } else {
+    console.log(`not signed in`);
+  }
+})
+
 /* Setting Height */
 window.addEventListener('load', () => {
   document.firstElementChild.style.height = (window.innerHeight - 2) + 'px';
@@ -27,3 +43,4 @@ viewButtons.forEach(button => {
     }
   })
 })
+

@@ -1,34 +1,31 @@
-import { app } from "./config";
+import { app, auth, db } from "./config";
 import { 
-  getAuth,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   connectAuthEmulator,
   signOut,
   updateProfile, 
-  signInWithEmailAndPassword } from "firebase/auth";
+  signInWithEmailAndPassword, 
+} from "firebase/auth";
 import { 
   ref,
-  getDatabase,
   set,
   get,
   connectDatabaseEmulator,
   query, 
-  orderByChild, 
-  limitToFirst, 
-  equalTo} from "firebase/database";
+  orderByChild,
+  equalTo
+} from "firebase/database";
 import { getDefaultProfilePic } from "./storage";
 import {
   validEmail,
   validUsername,
   validPassword,
   validConfirmPass,
-  validEntry } from "./validators";
+  validEntry 
+} from "./validators";
 
-const auth = getAuth();
 connectAuthEmulator(auth, "http://localhost:9099", {disableWarnings: true});
-
-const db = getDatabase();
 connectDatabaseEmulator(db, "localhost", 9000);
 
 const signUpSubmit = document.getElementById('sign-up-submit');
@@ -111,7 +108,6 @@ signUpSubmit.addEventListener('click', async (e) => {
   errMessages = [];
   errorBox.innerHTML = '';
   errorBox.style.border = `none`;
-
   var emailErrs = validEmail(signUpEmail.value);
   if(emailErrs.length > 0){
     errMessages[0] = emailErrs;
@@ -160,6 +156,12 @@ signUpSubmit.addEventListener('click', async (e) => {
     try{
       const userCredentials = await createUserWithEmailAndPassword(auth, signUpEmail.value.toUpperCase(), signUpPassword.value);
       const user = userCredentials.user;
+
+      // email verification?
+      // await sendEmailVerification(user);
+      // console.log(`the email was sent successfully!`);
+
+      // Might move this to be after email verification
       const userRef = ref(db, `users/${user.uid}`);
       const usernameRef = ref(db, `usernames/${signUpUsername.value.toUpperCase()}`);
       const defaultProfilePic = await getDefaultProfilePic();
@@ -171,7 +173,7 @@ signUpSubmit.addEventListener('click', async (e) => {
           email: signUpEmail.value.toUpperCase(),
           posts: 0,
           rating: 0,
-          last_login: Date.now(),
+          last_login: Date(),
           profile_pic: defaultProfilePic,
         });
         const set2 = set(usernameRef, {email: signUpEmail.value.toUpperCase()});
@@ -186,8 +188,7 @@ signUpSubmit.addEventListener('click', async (e) => {
         userProfilePic.setAttribute('src', user.photoURL);
         logInWindow.close();
         signUpWindow.close();
-        return;
-      } 
+      }
     }catch(err){
       console.error(err);
     }
@@ -253,8 +254,12 @@ logInSubmit.addEventListener('click', async (e) => {
     hideLogInErrorBox();
     try{
       const userCredentials = await signInWithEmailAndPassword(auth, logInEmail, logInPass.value);
+      const user = userCredentials.user;
       logInWindow.close();
       
+      const loginRef = ref(db, `users/${user.uid}/last_login`);
+      await set(loginRef, Date());
+
     }catch(err){
       console.error(err);
       showLogInErrorBox();
@@ -289,15 +294,14 @@ const hideLogInErrorBox = () => {
 const logOutConfirm = document.getElementById('log-out-confirm');
 logOutConfirm.addEventListener('click', async () => {
   try{
+    const logoutRef = ref(db, `users/${auth.currentUser.uid}/last_logout`);
+    await set(logoutRef, Date());
     await signOut(auth);
     location.reload();
-    return;
   }catch(err){
     console.error(err);
   }
-})
-
-/* Update on Value change */
+});
 
 /* UI Selection */
 const userProfilePic = document.querySelector('.user-profile-pic');
@@ -310,26 +314,37 @@ onAuthStateChanged(auth, user => {
     if(user.displayName != null && userTitle == null){
       // user title
       overhead.insertAdjacentHTML('beforeend', `
-        <h1 class="user-title">${user.displayName}</h1>
+        <h1 class="user-title hidden">${user.displayName}</h1>
       `);
       // user profile pic
       userProfilePic.setAttribute('src', user.photoURL);
     }
-    showHeader();
-    logOutButton.classList.add('show-log-out-button');
+    userProfilePic.addEventListener('load', () => {showLoggedIn()}, {once: true});
   }else{
-    hideHeader();
-    logOutButton.classList.remove('show-log-out-button');
-    if(userTitle != null){
-      userTitle.remove();
-    }
+    showLoggedOut();
   }
 });
-function showHeader() {
+function showLoggedIn() {
+  overhead.querySelector('.user-title').classList.remove('hidden');
   userProfilePic.classList.remove('hidden');
   logInButton.classList.add('hidden');
+  logOutButton.classList.add('show-log-out-button');
 }
-function hideHeader(){
+function showLoggedOut(){
   userProfilePic.classList.add('hidden');
   logInButton.classList.remove('hidden');
+  logOutButton.classList.remove('show-log-out-button');
+  if(userTitle != null){
+    userTitle.remove();
+  }
 }
+
+/* Userpage Icon Button */
+userProfilePic.addEventListener('click', () => {
+  const user = auth.currentUser;
+  if(user){
+    window.location = `user.html?${user.displayName}`;
+  } else {
+    console.error(`Missing or insufficient permissions`);
+  }
+});

@@ -9,3 +9,9 @@ export const firebaseConfig = {
   appId: process.env.APP_ID
 };
 export const app = initializeApp(firebaseConfig);
+
+import { getAuth } from "firebase/auth";
+export const auth = getAuth();
+
+import { getDatabase } from "firebase/database";
+export const db = getDatabase();
