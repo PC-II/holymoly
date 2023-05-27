@@ -1,10 +1,17 @@
+/* Loading */
+document.onreadystatechange = () => {
+  if(document.readyState === 'complete'){
+    document.body.removeChild(document.querySelector('.load-screen'));
+  }
+}
+
 /* Setting Height */
 window.addEventListener('load', () => {
   document.firstElementChild.style.height = (window.innerHeight - 2) + 'px';
   document.firstElementChild.lastElementChild.style.height = (window.innerHeight - 2) + 'px';
 })
 
-/* Menu Toggles */
+/* Main Menu */
 const menuButton = document.querySelectorAll('.menu-button'),
   menu = document.querySelector('.menu');
 menuButton.forEach(button => {
@@ -18,23 +25,30 @@ genreButton.addEventListener('click', () => {
   genreList.classList.toggle('genre-list-toggle');
 });
 
-/* Log In | Sign Up */
+/* Log In Menu | Sign Up Menu */
 const logInButton = document.querySelector('.log-in-button'),
   logInWindow = document.querySelector('.log-in-window');
 logInButton.addEventListener('click', () => {
   logInWindow.showModal();
-})
+});
 const signUpButton = document.querySelector('.sign-up a'),
   signUpWindow = document.querySelector('.sign-up-window');
 signUpButton.addEventListener('click', () => {
+  logInWindow.querySelectorAll('form input').forEach(input => {
+    input.style.border = 'unset';
+  });
   signUpWindow.showModal();
   logInWindow.firstElementChild.reset();
-})
+});
 const backToLogIn = document.querySelector('.back-to-log-in');
 backToLogIn.addEventListener('click', () => {
+  signUpWindow.querySelectorAll('form input').forEach(input => {
+    input.style.border = 'unset';
+  });
   signUpWindow.close();
   signUpWindow.firstElementChild.reset();
-})
+  errMessages = [];
+});
 logInWindow.addEventListener("click", e => {
   const dialogDimensions = logInWindow.getBoundingClientRect()
   if (
@@ -47,20 +61,24 @@ logInWindow.addEventListener("click", e => {
     signUpWindow.close();
     logInWindow.firstElementChild.reset();
     signUpWindow.firstElementChild.reset();
+    document.querySelectorAll('form input').forEach(input => {
+      input.style.border = 'unset';
+    });
   }
+});
+
+/* Log Out Menu */
+const logOutButtons = document.querySelectorAll('#log-out-toggle');
+const logOutContainer = document.querySelector('.log-out-container');
+logOutButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    logOutContainer.classList.toggle('show-log-out-menu');
+  })
 })
-
-
-
-
-/* Register Users */
-
-
 
 /* Generating Posts */
 // const storage = getStorage();
 // const storageRef = ref(storage, 'images');
-
 
 
 // document.getElementById('upload').addEventListener('change', () => {

@@ -9,6 +9,8 @@
   --alternate-color: #A99985;
   --holy-color: #081512;
   --general-opacity: 0.8;
+
+  --warning: #F61D58;
 }
 
 *{
@@ -41,6 +43,40 @@ body{
   align-items: center;
 }
 
+.load-screen{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+.load-screen .loader{
+  position: absolute;
+  background: repeating-linear-gradient(var(--secondary-color) 50%, var(--primary-color)25%, var(--primary-accent) 50%, var(--secondary-accent));
+  width: 100%;
+  height: 50%;
+  animation: spin 3s linear infinite;
+}
+.load-screen .load-bar{
+  position: fixed;
+  border: 1px solid white;
+  border-radius: 10px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 10px;
+  width: 50%;
+  margin: auto;
+  box-shadow: 0 0 0 99999px black;
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .overhead{
   position: fixed;
   width: 100%;
@@ -54,30 +90,33 @@ body{
 .overhead .menu-button{
   pointer-events: all;
 }
-.overhead img{
-  position: fixed;
-  border: 1px solid white;
-  height: 30px;
-  width: 30px;
-  padding: 7px;
-  border-radius: 50px;
-  margin: 7px;
+.user-profile-pic-container{
+  position: absolute;
   right: 0;
+  top: 0;
+  width: 50px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 100px;
+  margin: 10px;
+  border: 1px solid white;
+}
+.overhead .user-profile-pic{
+  position: absolute;
+  left: -23%;
+  height: 100%;
   pointer-events: all;
 }
 .overhead .user-title{
-  position: fixed;
+  position: absolute;
   left: 50%;
   transform: translateX(-50%);
   margin: 7px;
-  opacity: 0.7;
+  opacity: 0.8;
+  text-decoration: underline;
 }
-.hidden{
-  transform: translateY(-100px);
-}
-
 .log-in-button{
-  position: fixed;
+  position: absolute;
   top: 15px;
   right: 10px;
   height: 26px;
@@ -85,6 +124,10 @@ body{
   font-size: 16px;
   pointer-events: all;
 }
+.hidden{
+  display: none;
+}
+
 dialog{
   position: fixed;
   top: 50%;
@@ -96,6 +139,10 @@ dialog{
   border-radius: 10px;
   background: linear-gradient(0deg, var(--primary-color), var(--primary-accent));
 }
+.sign-up-window{
+  height: 400px;
+  transition: ease 350ms;
+}
 .log-in-window::backdrop{
   background-color: black;
   opacity: 0.7;
@@ -104,13 +151,19 @@ dialog{
   pointer-events: none;
 }
 form{
-  margin-top: 10px;
-  height: 80%;
+  position: absolute;
+  left: 0;
+  top: 30px;
+  height: 70%;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+}
+.sign-up-window form{
+  top: 40px;
+  transition: ease 350ms;
 }
 form h1{
   color: var(--secondary-color);
@@ -120,10 +173,6 @@ form input{
   font-size: 16px;
   font-weight: 500;
 }
-form input:valid{
-  border: 2px solid green;
-}
-
 .links{
   position: fixed;
   left: 0;
@@ -155,6 +204,56 @@ form input:valid{
   margin-left: 0;
   margin-bottom: 3px;
   font-size: 15px;
+}
+.error-box{
+  display: none;
+  position: static;
+  margin: auto;
+  margin-top: 252px;
+  max-height: 200px;
+  overflow-y: scroll;
+  background: var(--primary-color);
+  transition: display ease 350ms;
+}
+.error-box p{
+  color: var(--secondary-color);
+  font-size: 12px;
+  font-weight: 300;
+  padding: 2px;
+
+  border-bottom: 1px solid var(--secondary-accent);
+}
+.shake {
+  animation: shake 150ms linear forwards;
+}
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 70% {
+    transform: translateX(5px);
+  }
+  30%, 90% {
+    transform: translateX(-5px);
+  }
+}
+.log-in-error-box{
+  display: none;
+  position: static;
+  margin: auto;
+  margin-top: 190px;
+  max-height: 50px;
+  overflow-y: scroll;
+  background: var(--primary-color);
+  transition: display ease 350ms;
+}
+.log-in-error-box p{
+  color: var(--secondary-color);
+  font-size: 12px;
+  font-weight: 300;
+  padding: 2px;
+
+  border-bottom: 1px solid var(--secondary-accent);
 }
 
 .menu{
@@ -234,6 +333,76 @@ form input:valid{
   width: 100%;
   background: black;
   opacity: 0.7;
+}
+.log-out-button{
+  position: absolute;
+  background: var(--warning);
+  color: var(--secondary-color);
+  border-radius: 10px;
+  width: 100%;
+  height: 30px;
+  bottom: 0;
+  left: -100%;
+  margin-bottom: 20px;
+}
+.show-log-out-button{
+  left: unset;
+}
+.log-out-container{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.871);
+  z-index: 2;
+
+  opacity: 0;
+  pointer-events: none;
+  right: -100%;
+}
+.log-out-container .log-out-box{
+  position: absolute;
+  background: var(--secondary-accent);
+  width: 90%;
+  height: 80px;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.log-out-box p,
+.log-out-box div{
+  position: relative;
+  width: 100%;
+  height: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+.log-out-box span{
+  color: var(--warning);
+  margin-left: 6px;
+}
+.log-out-box div button{
+  position: relative;
+  height: 70%;
+  width: 40%;
+  margin: auto;
+  border-radius: 7px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.show-log-out-menu{
+  opacity: 1;
+  pointer-events: all;
+  right: 0;
 }
 
 .container{

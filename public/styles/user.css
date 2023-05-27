@@ -56,20 +56,44 @@ body{
   transition: height 350ms ease;
 }
 .header .profile-pic{
-  position: absolute;
-  height: 80px;
+  position: relative;
   width: 80px;
+  aspect-ratio: 1;
+  overflow: hidden;
   border-radius: 100px;
   margin: 10px;
+
+  border: 1px solid white;
+}
+.profile-pic img{
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: -23%;
+  object-fit: cover;
+
+  height: 100%;
+}
+.top-line{
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  top: 0;
+  left: 104px;
+  right: 0;
 }
 h1{
 /* Username */
   color: var(--secondary-color);
-  position: absolute;
-  top: 15px;
-  left: 103px;
-  right: 10px;
+  position: relative;
   overflow-x: scroll;
+  top: 15px;
+  height: 30px;
+
+}
+.header .bx-menu-alt-right{
+  position: relative;
 }
 .header .rating{
   position: absolute;
@@ -97,11 +121,7 @@ h1{
 .bar.fame{
   background: linear-gradient(90deg, gold, green)
 }
-.header .bx-menu-alt-right{
-  right: 5px;
-}
 .header .buttons{
-  /* border: 1px solid white; */
   position: absolute;
   display: flex;
   justify-content: space-between;
