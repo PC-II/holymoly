@@ -79,22 +79,26 @@ body{
 
 .overhead{
   position: fixed;
-  width: 100%;
+  left: 0;
+  right: 0;
+  top: 10px;
   height: 50px;
   max-width: 1000px;
-  pointer-events: none;
   z-index: 2;
-
   opacity: var(--general-opacity);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* border: 1px solid red; */
 }
 .overhead .menu-button{
-  pointer-events: all;
+  position: relative;
 }
 .user-profile-pic-container{
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 50px;
+  position: relative;
+  min-width: 50px;
+  max-width: 50px;
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: 100px;
@@ -108,21 +112,25 @@ body{
   pointer-events: all;
 }
 .overhead .user-title{
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   margin: 7px;
-  opacity: 0.8;
+  left: 4%;
+  transform: translateX(-4%);
+  color: var(--secondary-color);
   text-decoration: underline;
+  overflow-x: scroll;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 .log-in-button{
   position: absolute;
-  top: 15px;
   right: 10px;
   height: 26px;
-  width: 70px;
+  width: 80px;
   font-size: 16px;
-  pointer-events: all;
+  border-radius: 7px;
+  appearance: none;
+  -webkit-appearance: none;
 }
 .hidden{
   display: none;
@@ -172,6 +180,11 @@ form h1{
 form input{
   font-size: 16px;
   font-weight: 500;
+}
+form button{
+  border-radius: 7px;
+  appearance: none;
+  -webkit-appearance: none;
 }
 .links{
   position: fixed;

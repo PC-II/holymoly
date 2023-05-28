@@ -182,9 +182,7 @@ signUpSubmit.addEventListener('click', async (e) => {
           photoURL: defaultProfilePic,
         })
         await Promise.allSettled([set1, set2, set3]);
-        overhead.insertAdjacentHTML('beforeend', `
-          <h1 class="user-title">${user.displayName}</h1>
-        `)
+        userTitle.textContent = user.displayName;
         userProfilePic.setAttribute('src', user.photoURL);
         logInWindow.close();
         signUpWindow.close();
@@ -297,12 +295,9 @@ const userTitle = document.querySelector('.user-title');
 const overhead = document.querySelector('.overhead');
 onAuthStateChanged(auth, user => {
   if(user){
-    if(user.displayName != null && userTitle == null){
-      // user title
-      overhead.insertAdjacentHTML('beforeend', `
-        <h1 class="user-title hidden">${user.displayName}</h1>
-      `);
-      // user profile pic
+    console.log(user.displayName);
+    if(user.displayName != null){
+      userTitle.textContent = user.displayName;
       userProfilePic.setAttribute('src', user.photoURL);
     }
     userProfilePic.addEventListener('load', () => {showLoggedIn()}, {once: true});
@@ -311,16 +306,14 @@ onAuthStateChanged(auth, user => {
   }
 });
 function showLoggedIn() {
-  overhead.querySelector('.user-title').classList.remove('hidden');
+  userTitle.classList.remove('hidden');
   userProfilePicContainer.classList.remove('hidden');
   logInButton.classList.add('hidden');
 }
 function showLoggedOut(){
   userProfilePicContainer.classList.add('hidden');
   logInButton.classList.remove('hidden');
-  if(userTitle != null){
-    userTitle.remove();
-  }
+  userTitle.textContent = ``;
 }
 
 /* Userpage Icon Button */
