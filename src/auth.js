@@ -292,10 +292,8 @@ const hideLogInErrorBox = () => {
 const userProfilePic = document.querySelector('.user-profile-pic');
 const logInButton = document.querySelector('.log-in-button');
 const userTitle = document.querySelector('.user-title');
-const overhead = document.querySelector('.overhead');
 onAuthStateChanged(auth, user => {
   if(user){
-    console.log(user.displayName);
     if(user.displayName != null){
       userTitle.textContent = user.displayName;
       userProfilePic.setAttribute('src', user.photoURL);
@@ -321,7 +319,7 @@ const userProfilePicContainer = document.querySelector('.user-profile-pic-contai
 userProfilePic.addEventListener('click', () => {
   const user = auth.currentUser;
   if(user){
-    window.location = `user.html?${user.displayName}`;
+    window.location = `./user.html?name=${user.displayName}`;
   } else {
     console.error(`Missing or insufficient permissions`);
   }

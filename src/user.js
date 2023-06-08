@@ -8,6 +8,7 @@ connectDatabaseEmulator(db, "localhost", 9000);
 /* Check if User is Signed in Before Anything */
 onAuthStateChanged(auth, user => {
   if(user){
+    document.title = user.displayName;
     document.querySelector('.load-screen').remove();
     document.querySelector('.header h1').textContent = user.displayName;
     document.querySelector('.profile-pic img').setAttribute('src', user.photoURL);
@@ -21,19 +22,6 @@ window.addEventListener('load', () => {
   document.firstElementChild.style.height = (window.innerHeight - 2) + 'px';
   document.firstElementChild.lastElementChild.style.height = (window.innerHeight - 2) + 'px';
 })
-
-/* More Info Button */
-const header = document.querySelector('.header');
-const infoButton = document.querySelector('.info-button');
-window.expand = () => {
-  if(infoButton.textContent == '> More Info'){
-    header.style.height = '250px';
-    infoButton.textContent = '^ Less Info';
-  } else {
-    header.style.height = '160px';
-    infoButton.textContent = '> More Info';
-  }
-}
 
 /* Action Bar Selection */
 const viewButtons = document.querySelectorAll('.action-bar div');
@@ -101,12 +89,7 @@ logOutConfirm.addEventListener('click', async () => {
 });
 
 /* Make a Post */
-// const toggleUploadButtons = document.querySelectorAll('.toggle-upload');
-// const uploadScreen = document.querySelector('.upload');
-// toggleUploadButtons.forEach(button => {
-//   button.addEventListener('click', () => {
-//     uploadScreen.classList.toggle('show-upload');
-//   })
-// })
-
-// 200 mb
+const postButton = document.querySelector('.make-a-post');
+postButton.addEventListener('click',() => {
+  window.location.href = `./make_a_post.html`;
+});

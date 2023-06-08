@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./styles/user.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <title>Make A Post</title>
+</head>
+<body>
+  <div class="container">
+    <section class="upload-area">
+      <div class="preview">
+        <i class='bx bx-image-add'></i>
+        <p>select an image or video</p>
+        <img src="" alt="">
+        <video src="" autoplay muted loop></video>
+      </div>
+      <div class="errors"></div>
+      <div class="select-img">
+        <label for="file-input">Select a file</label>
+        <input type="file" id="file-input" accept="image/*,video/*,video/mp4,video/x-m4v" hidden>
+      </div>
+      <div class="upload-buttons">
+        <button id="upload-cancel">Cancel</button>
+        <button id="upload-confirm">Upload</button>
+      </div>
+    </section>
+  </div>
+</body>
+<script src="./scripts/make_a_post.js"></script>
+</html>
