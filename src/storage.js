@@ -1,7 +1,6 @@
-import { app } from "./config";
-import { getStorage, ref, getDownloadURL, connectStorageEmulator } from "firebase/storage";
+import { storage } from "./config";
+import { ref, getDownloadURL, connectStorageEmulator } from "firebase/storage";
 
-const storage = getStorage();
 connectStorageEmulator(storage, "localhost", 9199);
 
 /* Get Default Profile Picture */

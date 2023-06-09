@@ -93,3 +93,5 @@ const postButton = document.querySelector('.make-a-post');
 postButton.addEventListener('click',() => {
   window.location.href = `./make_a_post.html`;
 });
+
+/* Show User Posts */

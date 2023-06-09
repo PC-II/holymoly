@@ -216,6 +216,9 @@ h1{
   width: 100%;
   min-height: 100%;
 }
+.preview-my-posts{
+  
+}
 
 .menu{
   position: fixed;
@@ -501,4 +504,20 @@ h1{
 .upload-buttons button{
   width: 49%;
   user-select: none;
+}
+.upload-progress{
+  position: relative;
+  border: 2px solid black;
+  border-radius: 4px;
+  height: 10px;
+  width: 296px;
+  margin-top: 10px;
+  overflow: hidden;
+  opacity: 0;
+}
+.upload-progress span{
+  position: absolute;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(45deg, var(--holy-color) 5%, green 20%);
 }
