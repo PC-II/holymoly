@@ -217,7 +217,16 @@ h1{
   min-height: 100%;
 }
 .preview-my-posts{
-  
+  width: 100%;
+  display: grid;
+  grid-template-columns: 30% 30% 30%;
+  gap: 3vw 3vw;
+  justify-content: center;
+}
+.my-post{
+  border: 1px solid blue;
+  width: 30vw;
+  height: 30vw;
 }
 
 .menu{

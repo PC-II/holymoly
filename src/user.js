@@ -1,17 +1,26 @@
 import { auth, db } from "./config";
 import { connectAuthEmulator, onAuthStateChanged, signOut } from "firebase/auth";
 import { connectDatabaseEmulator, ref, set } from "firebase/database";
+import { generateMyPosts } from "./storage";
 
 connectAuthEmulator(auth, "http://localhost:9099", {disableWarnings: true});
 connectDatabaseEmulator(db, "localhost", 9000);
 
 /* Check if User is Signed in Before Anything */
-onAuthStateChanged(auth, user => {
+const previewMyPosts = document.querySelector('.preview-my-posts');
+onAuthStateChanged(auth, async user => {
   if(user){
+    document.querySelector('.load-screen').remove(); // move to bottom when finished
+
+
     document.title = user.displayName;
-    document.querySelector('.load-screen').remove();
     document.querySelector('.header h1').textContent = user.displayName;
     document.querySelector('.profile-pic img').setAttribute('src', user.photoURL);
+    
+    // Generate User Posts
+    await generateMyPosts(user.uid);
+
+
   } else {
     window.location=`index.html`;
   }
@@ -93,5 +102,3 @@ const postButton = document.querySelector('.make-a-post');
 postButton.addEventListener('click',() => {
   window.location.href = `./make_a_post.html`;
 });
-
-/* Show User Posts */

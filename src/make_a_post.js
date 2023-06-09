@@ -83,6 +83,7 @@ submitButton.addEventListener('click', async () => {
   }
 
   document.querySelector('.upload-buttons').setAttribute('style', 'display:none');
+  document.querySelector('.select-img label').setAttribute('style', 'display:none');
   
   uploadProgress.setAttribute('style', 'opacity:1');
   upload.on('state_changed', (snapshot) => {
@@ -93,8 +94,8 @@ submitButton.addEventListener('click', async () => {
       done.textContent = 'Done!';
       uploadProgress.insertAdjacentElement('afterend', done);
       setTimeout(() => {
-        window.history.back();
-      }, 1000);
+        window.location = './user.html';
+      }, 350);
     }
   });
 });
